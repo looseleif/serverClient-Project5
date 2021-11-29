@@ -1,0 +1,10 @@
+../Testcases/TestCase2/F1//xan.txt
+../Testcases/TestCase2/F1//xag.txt
+../Testcases/TestCase2/F1//xaf.txt
+../Testcases/TestCase2/F1//xao.txt
+../Testcases/TestCase2/F1//xae.txt
+../Testcases/TestCase2/F1//xal.txt
+../Testcases/TestCase2/F1//xap.txt
+../Testcases/TestCase2/F1//xbg.txt
+../Testcases/TestCase2/F1//xaj.txt
+../Testcases/TestCase2/F1//xac.txt

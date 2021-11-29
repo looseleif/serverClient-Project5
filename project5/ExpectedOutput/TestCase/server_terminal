@@ -1,0 +1,71 @@
+./server 2
+[Fri Nov 19 23:27:27 2021]Server starts...
+[Fri Nov 19 23:27:27 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:27 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 received ../Testcases/TestCase2/F1//xan.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 received ../Testcases/TestCase2/F1//xai.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 sending ACK to client 0 for ../Testcases/TestCase2/F1//xan.txt
+[Fri Nov 19 23:27:29 2021]Thread 1 sending ACK to client 1 for ../Testcases/TestCase2/F1//xai.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 1 received ../Testcases/TestCase2/F1//xaa.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 received ../Testcases/TestCase2/F1//xag.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 sending ACK to client 1 for ../Testcases/TestCase2/F1//xaa.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 1 received ../Testcases/TestCase2/F1//xah.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 sending ACK to client 0 for ../Testcases/TestCase2/F1//xag.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 0 received ../Testcases/TestCase2/F1//xaf.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 sending ACK to client 1 for ../Testcases/TestCase2/F1//xah.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 1 received ../Testcases/TestCase2/F1//xbj.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 sending ACK to client 0 for ../Testcases/TestCase2/F1//xaf.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 0 received ../Testcases/TestCase2/F1//xao.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 sending ACK to client 1 for ../Testcases/TestCase2/F1//xbj.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 1 received ../Testcases/TestCase2/F1//xab.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 sending ACK to client 0 for ../Testcases/TestCase2/F1//xao.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 0 received ../Testcases/TestCase2/F1//xae.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 sending ACK to client 1 for ../Testcases/TestCase2/F1//xab.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 1 received ../Testcases/TestCase2/F1//xak.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 sending ACK to client 0 for ../Testcases/TestCase2/F1//xae.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 0 received ../Testcases/TestCase2/F1//xal.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 sending ACK to client 1 for ../Testcases/TestCase2/F1//xak.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 1 received ../Testcases/TestCase2/F1//xbi.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 sending ACK to client 0 for ../Testcases/TestCase2/F1//xal.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 0 received ../Testcases/TestCase2/F1//xap.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 sending ACK to client 1 for ../Testcases/TestCase2/F1//xbi.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 1 received ../Testcases/TestCase2/F1//xbh.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 sending ACK to client 0 for ../Testcases/TestCase2/F1//xap.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 0 received ../Testcases/TestCase2/F1//xbg.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 sending ACK to client 1 for ../Testcases/TestCase2/F1//xbh.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 1 received ../Testcases/TestCase2/F1//xam.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 sending ACK to client 0 for ../Testcases/TestCase2/F1//xbg.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 0 received ../Testcases/TestCase2/F1//xaj.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 sending ACK to client 1 for ../Testcases/TestCase2/F1//xam.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 1 received ../Testcases/TestCase2/F1//xad.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 sending ACK to client 0 for ../Testcases/TestCase2/F1//xaj.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 0 received ../Testcases/TestCase2/F1//xac.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 sending ACK to client 1 for ../Testcases/TestCase2/F1//xad.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 sending ACK to client 0 for ../Testcases/TestCase2/F1//xac.txt
+[Fri Nov 19 23:27:29 2021]Waiting to rcv from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 1 received EN from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 1 received END from client process 1
+[Fri Nov 19 23:27:29 2021]Thread 0 received EN from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 0 received END from client process 0
+[Fri Nov 19 23:27:29 2021]Thread 0 sending final letter count to client process 0
+[Fri Nov 19 23:27:30 2021]Thread 1 sending final letter count to client process 1
+[Fri Nov 19 23:27:30 2021]Server ends...

@@ -1,0 +1,48 @@
+ ./client ../Testcases/TestCase2/F1/ 2
+[Fri Nov 19 23:27:29 2021]Client starts...
+[Fri Nov 19 23:27:29 2021]Directory ../Testcases/TestCase2/F1/ traversal and file partitioning...
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xai.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xan.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 1 received ACK from server for ../Testcases/TestCase2/F1//xai.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xaa.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Client process 0 received ACK from server for ../Testcases/TestCase2/F1//xan.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xag.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 1 received ACK from server for ../Testcases/TestCase2/F1//xaa.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xah.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Client process 0 received ACK from server for ../Testcases/TestCase2/F1//xag.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xaf.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 1 received ACK from server for ../Testcases/TestCase2/F1//xah.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xbj.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Client process 0 received ACK from server for ../Testcases/TestCase2/F1//xaf.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xao.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 1 received ACK from server for ../Testcases/TestCase2/F1//xbj.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xab.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Client process 0 received ACK from server for ../Testcases/TestCase2/F1//xao.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xae.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 1 received ACK from server for ../Testcases/TestCase2/F1//xab.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xak.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Client process 0 received ACK from server for ../Testcases/TestCase2/F1//xae.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xal.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 1 received ACK from server for ../Testcases/TestCase2/F1//xak.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xbi.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Client process 0 received ACK from server for ../Testcases/TestCase2/F1//xal.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xap.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 1 received ACK from server for ../Testcases/TestCase2/F1//xbi.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xbh.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Client process 0 received ACK from server for ../Testcases/TestCase2/F1//xap.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xbg.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 1 received ACK from server for ../Testcases/TestCase2/F1//xbh.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xam.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Client process 0 received ACK from server for ../Testcases/TestCase2/F1//xbg.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xaj.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 1 received ACK from server for ../Testcases/TestCase2/F1//xam.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xad.txt from client process 1
+[Fri Nov 19 23:27:29 2021]Client process 0 received ACK from server for ../Testcases/TestCase2/F1//xaj.txt
+[Fri Nov 19 23:27:29 2021]Sending ../Testcases/TestCase2/F1//xac.txt from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 1 received ACK from server for ../Testcases/TestCase2/F1//xad.txt
+[Fri Nov 19 23:27:29 2021]Client process 0 received ACK from server for ../Testcases/TestCase2/F1//xac.txt
+[Fri Nov 19 23:27:29 2021]Sending END from client process 1
+[Fri Nov 19 23:27:29 2021]Sending END from client process 0
+[Fri Nov 19 23:27:29 2021]Client process 0 received |||115#109#196#107#77#69#68#72#69#13#25#51#104#81#60#180#10#87#200#91#143#22#35#1#8#7#||| from server
+[Fri Nov 19 23:27:30 2021]Client process 1 received |||115#109#196#107#77#69#68#72#69#13#25#51#104#81#60#180#10#87#200#91#143#22#35#1#8#7#||| from server
+[Fri Nov 19 23:27:30 2021]Client ends...
