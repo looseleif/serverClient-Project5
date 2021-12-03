@@ -34,6 +34,10 @@ void* process_client(void* param) {
 
 		msgrcv(midCtoS, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
 
+		// read file
+
+		// send ack
+
 		perror("LOL");
 
 		printf("Received: %s", buf.mtext);
