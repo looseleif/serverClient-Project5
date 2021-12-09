@@ -59,10 +59,11 @@ void* process_client(void* param) {
 	while (strcmp(recvMsg.mtext, "END") != 0) {
 
 		//setting up message queue
-		//msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
+		msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
 
 		//Testing
-		input = fopen("txt.txt", "r");
+		printf("%s\n",recvMsg.mtext);
+		input = fopen(recvMsg.mtext, "r");
 
 		//error checking
 		if (input == NULL) {
@@ -121,12 +122,12 @@ void* process_client(void* param) {
 		sendMsg.mtext[1] = 'C';
 		sendMsg.mtext[2] = 'K';
 
-		//msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0);]
+		msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0);
 
 		//waits for the END message
-		recvMsg.mtext[0] = 'E';
-		recvMsg.mtext[1] = 'N';
-		recvMsg.mtext[2] = 'D';
+		//recvMsg.mtext[0] = 'E';
+		//recvMsg.mtext[1] = 'N';
+		//recvMsg.mtext[2] = 'D';
 	}
 
 	free(param);
@@ -152,7 +153,16 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	key_t keyCtoS = 101;
+	key_t keyCtoS = 123;
+
+	msgQ = msgget(keyCtoS, 0666 | IPC_CREAT);
+
+	//end clean up
+  	if(msgctl(msgQ, IPC_RMID, NULL) == -1)
+  	{
+    	perror("msgctl");
+    	exit(1);
+  	}
 
 	msgQ = msgget(keyCtoS, 0666 | IPC_CREAT);
 

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include <dirent.h>
 #include <sys/stat.h>
@@ -55,6 +56,7 @@ void recursiveTraverse(char *path)
 
         char * txtFilePath = (char*) malloc(sizeof(path) + sizeof(directoryPointer->d_name) + 2);
         //printf("- \n%s \n-", path);
+        //printf("%s\n", directoryPointer->d_name);
         sprintf(txtFilePath, "%s%s", path, directoryPointer->d_name);
 
         numOfFiles++;
@@ -101,8 +103,18 @@ int main(int argc, char* argv[])
   char* absdirname = realpath(dirname,NULL);
   strcat(absdirname, "/");
 
+  //printf("%s\n", absdirname);
+
   //recursively look for txt files and add them to txtFilePaths
   recursiveTraverse(absdirname);
+
+  /*
+  int testI;
+  for(testI = 0; testI < numOfFiles; testI++)
+  {
+    printf("%s\n", txtFilePaths[testI]);
+  }
+  */
 
   //exit if no files were found
   if(numOfFiles == 0)
@@ -134,8 +146,15 @@ int main(int argc, char* argv[])
 
     //Creating the required filenames
     sprintf(filename, "ClientInput/Client%d.txt", i);
-
+    printf("%s\n", filename);
     fp = fopen(filename, "w");
+
+    if(fp == NULL)
+    {
+      perror("ClientInput fopen");
+      free(absdirname);
+      exit(1);
+    }
 
     for(j = 0; j < baseFilesPerClient; j++) //writes base number of file paths
     {
@@ -153,7 +172,7 @@ int main(int argc, char* argv[])
     fclose(fp);
   }
 
-  key_t keyCtoS = 101;
+  key_t keyCtoS = 123;
   int msgQ = msgget(keyCtoS, 0666 | IPC_CREAT);
 
   pid_t pid;
@@ -187,17 +206,22 @@ int main(int argc, char* argv[])
     sprintf(inputFileName, "ClientInput/Client%d.txt", clientID);
     FILE * inputFP = fopen(inputFileName, "r");
 
-    while(fgets(sendBuf.mtext, 128, inputFP) != NULL)
+    while(fgets(sendBuf.mtext, 256, inputFP) != NULL) //recieve file path in text file
     {
-      printf("Sending %s. \n", sendBuf.mtext);
+      sendBuf.mtext[strcspn(sendBuf.mtext, "\n")] = 0;
+      printf("Sending %s.\n", sendBuf.mtext);
+      //send file path
       msgsnd(msgQ, (void*) &sendBuf, sizeof(sendBuf), 0);
+      //recieve ACK
       msgrcv(msgQ, (void*) &recvBuf, sizeof(recvBuf), clientID + 30, 0);
-      printf("Sending %s. \n", recvBuf.mtext);
+      printf("Recieved %s.\n", recvBuf.mtext);
       if(strcmp(recvBuf.mtext, "ACK") != 0)
       {
         printf("Error: recieved %s instead of ACK. Continuing... \n", recvBuf.mtext);
       }
     }
+
+    fclose(inputFP);
 
     strcpy(sendBuf.mtext, "END");
     msgsnd(msgQ, (void*) &sendBuf, sizeof(sendBuf), 0); //send END
@@ -219,13 +243,46 @@ int main(int argc, char* argv[])
     fprintf(outFP, "%s\n", recvBuf.mtext);
 
     fclose(outFP);
+
+    free(absdirname);
+    return 0;
   }
   else //parent operations
   {
-
+    int counter;
+    for(counter = 0; counter < numOfClients; counter++)
+    {
+      //wait for all children
+      if(wait(NULL) < 0)
+		  {
+			  perror("ERROR: failed to wait for child"); 
+        free(absdirname);
+        int count;
+        for(count = 0; count < numOfFiles; count++)
+        {
+          free(txtFilePaths[count]);
+        }
+        free(txtFilePaths);
+			  exit(0);
+		  }
+    }
   }
 
+  int count;
+  for(count = 0; count < numOfFiles; count++)
+  {
+    free(txtFilePaths[count]);
+  }
+  free(txtFilePaths);
+
+
   //end clean up
+  if(msgctl(msgQ, IPC_RMID, NULL) == -1)
+  {
+    perror("msgctl");
+    free(absdirname);
+    exit(1);
+  }
   free(absdirname);
   return 0;
 
