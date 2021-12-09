@@ -23,9 +23,9 @@ void recursiveTraverse(char *path)
   struct dirent *directoryPointer;
   DIR *mydir;
 
-	int currentDirStorInt = 0;
+  int currentDirStorInt = 0;
 	
-	int excludePeriods = 0;
+  int excludePeriods = 0;
 
   if ((mydir = opendir(path)) == NULL) //error checking to see if the path is valid
   {
@@ -131,6 +131,8 @@ int main(int argc, char* argv[])
     int j;
     FILE * fp;
     char filename[30];
+
+    //Creating the required filenames
     sprintf(filename, "ClientInput/Client%d.txt", i);
 
     fp = fopen(filename, "w");
