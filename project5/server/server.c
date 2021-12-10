@@ -53,11 +53,16 @@ void* process_client(void* param) {
 
 	recvMsg.mtext[0] = 'A';
 
+	//sends 'ACK'
+	sendMsg.mtext[0] = 'A';
+	sendMsg.mtext[1] = 'C';
+	sendMsg.mtext[2] = 'K';
+
 	int wordCount = 0;
 
 	// -----------------
 	msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
-	printf("recv message:%s - type:%d\n", recvMsg.mtext, recvMsg.mtype);
+	printf("recv message:%s - type:%ld\n", recvMsg.mtext, recvMsg.mtype);
 	//while we haven't received END
 	do {
 
@@ -79,10 +84,10 @@ void* process_client(void* param) {
 		printf("first [%c] %d\n", c, thread_num);
 
 		//checking for a capital letter
-		//if (c < 97) {
-			//printf("-2-");
-			//c = c + 32;
-		//}
+		if (c < 97) {
+			printf("-2-");
+			c = c + 32;
+		}
 
 		//incrementing the correct character in the array
 		localArray[c - 97]++;
@@ -102,9 +107,9 @@ void* process_client(void* param) {
 			if (grabNext) {
 
 				printf("[%c] %d\n", c, thread_num);
-				//if (c < 97) {
-				//	c = c + 32;
-				//}
+				if (c < 97) {
+					c = c + 32;
+				}
 
 
 				localArray[c - 97]++;
@@ -133,13 +138,9 @@ void* process_client(void* param) {
 
 		sendMsg.mtype = thread_num + 30;
 
-		//sends 'ACK'
-		sendMsg.mtext[0] = 'A';
-		sendMsg.mtext[1] = 'C';
-		sendMsg.mtext[2] = 'K';
-
+		//sends ACK
 		msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0);
-		printf("sent message:%s - type:%d\n", sendMsg.mtext, sendMsg.mtype);
+		printf("sent ACK to client %ld\n", sendMsg.mtype);
 
 		//waits for the END message
 		//recvMsg.mtext[0] = 'E';
@@ -147,9 +148,23 @@ void* process_client(void* param) {
 		//recvMsg.mtext[2] = 'D';
 
 		msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
-		printf("recv message:%s - type:%d\n", recvMsg.mtext, recvMsg.mtype);
+		printf("recv message:%s - type:%ld\n", recvMsg.mtext, recvMsg.mtype);
 
 	} while (strcmp(recvMsg.mtext, "END") != 0);
+
+
+	char histogram[256];
+	//Print final output
+	int i;
+	for (i = 0; i < 26; i++) {
+		sprintf(histogram + strlen(histogram), "%d#", globalArray[i]);
+	} 
+
+	//printf(":) final result: %s \n", histogram);
+
+	//send global result
+	strcpy(sendMsg.mtext, histogram);
+	msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0);
 
 	free(param);
 
