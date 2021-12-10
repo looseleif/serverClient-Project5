@@ -53,16 +53,19 @@ void* process_client(void* param) {
 
 	recvMsg.mtext[0] = 'A';
 
-	// -----------------
+	int wordCount = 0;
 
+	// -----------------
+	msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
+	printf("recv message:%s - type:%d\n", recvMsg.mtext, recvMsg.mtype);
 	//while we haven't received END
-	while (strcmp(recvMsg.mtext, "END") != 0) {
+	do {
 
 		//setting up message queue
-		msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
+		//msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
 
 		//Testing
-		printf("%s\n",recvMsg.mtext);
+		//printf("recv message:%s - type:%d\n",recvMsg.mtext, recvMsg.mtype);
 		input = fopen(recvMsg.mtext, "r");
 
 		//error checking
@@ -73,20 +76,22 @@ void* process_client(void* param) {
 
 		//Getting our input for the first line
 		c = fgetc(input);
+		printf("first [%c] %d\n", c, thread_num);
 
 		//checking for a capital letter
-		if (c < 97) {
+		//if (c < 97) {
 			//printf("-2-");
-			c = c + 32;
-		}
+			//c = c + 32;
+		//}
 
 		//incrementing the correct character in the array
 		localArray[c - 97]++;
 
 		while (1) {
-			
+
 			//getting the character
 			c = fgetc(input);
+			//printf("[We get this: %c]\n",c);
 
 			//exits the while loop when we get to the end of the file
 			if (feof(input)) {
@@ -95,14 +100,19 @@ void* process_client(void* param) {
 
 			//checks and increments the character into the array
 			if (grabNext) {
-				if (c < 97) {
-					c = c + 32;
-				}
+
+				printf("[%c] %d\n", c, thread_num);
+				//if (c < 97) {
+				//	c = c + 32;
+				//}
+
+
 				localArray[c - 97]++;
 			}
 
 			//if the character is at the end of the line, we increment grabNext to get the next line
 			if (c == '\n') {
+				printf("newline!\n");
 				grabNext = 1;
 			}
 			else {
@@ -110,10 +120,16 @@ void* process_client(void* param) {
 			}
 		}
 
-		
+		grabNext = 0;
+
 		fclose(input);
 
 		updateGlobal(localArray);
+
+		int i;
+		for (i = 0; i < 26; i++) {
+			localArray[i] = 0;
+		}
 
 		sendMsg.mtype = thread_num + 30;
 
@@ -123,15 +139,20 @@ void* process_client(void* param) {
 		sendMsg.mtext[2] = 'K';
 
 		msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0);
+		printf("sent message:%s - type:%d\n", sendMsg.mtext, sendMsg.mtype);
 
 		//waits for the END message
 		//recvMsg.mtext[0] = 'E';
 		//recvMsg.mtext[1] = 'N';
 		//recvMsg.mtext[2] = 'D';
-	}
+
+		msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
+		printf("recv message:%s - type:%d\n", recvMsg.mtext, recvMsg.mtype);
+
+	} while (strcmp(recvMsg.mtext, "END") != 0);
 
 	free(param);
-	
+
 	return 0x0;
 
 }
@@ -158,11 +179,11 @@ int main(int argc, char* argv[])
 	msgQ = msgget(keyCtoS, 0666 | IPC_CREAT);
 
 	//end clean up
-  	if(msgctl(msgQ, IPC_RMID, NULL) == -1)
-  	{
-    	perror("msgctl");
-    	exit(1);
-  	}
+	if (msgctl(msgQ, IPC_RMID, NULL) == -1)
+	{
+		perror("msgctl");
+		exit(1);
+	}
 
 	msgQ = msgget(keyCtoS, 0666 | IPC_CREAT);
 
@@ -177,13 +198,13 @@ int main(int argc, char* argv[])
 
 		int* clientNum = (int*)malloc(sizeof(*clientNum));
 
-		*clientNum = i;
+		*clientNum = i + 1;
 
 		pthread_create(&threadArray[i], NULL, process_client, (void*)clientNum);
 
 	}
 
-	//Create threads
+	// Wait for threads
 	for (i = 0; i < threads; i++)
 	{
 		pthread_join(threadArray[i], NULL);
