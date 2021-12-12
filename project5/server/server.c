@@ -39,6 +39,9 @@ void* process_client(void* param) {
 
 	// REMEMBER TO FREE clientNum
 
+	time_t current_time;
+	char timeBuf[30];
+
 	struct msgbuf sendMsg;
 	struct msgbuf recvMsg;
 
@@ -65,7 +68,10 @@ void* process_client(void* param) {
 
 	// -----------------
 	msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
-	printf("recv message:%s - type:%ld\n", recvMsg.mtext, recvMsg.mtype);
+	time(&current_time);
+	strcpy(timeBuf, ctime(&current_time));
+    timeBuf[strcspn(timeBuf, "\n")] = 0;
+    printf("[%s] Thread %d recieved %s from client process %d\n", timeBuf, thread_num -1, recvMsg.mtext, thread_num - 1);
 	//while we haven't received END
 	do {
 
@@ -143,7 +149,11 @@ void* process_client(void* param) {
 
 		//sends ACK
 		msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0);
-		printf("sent ACK to client %ld\n", sendMsg.mtype);
+		time(&current_time);
+		strcpy(timeBuf, ctime(&current_time));
+    	timeBuf[strcspn(timeBuf, "\n")] = 0;
+    	printf("[%s] Thread %d sending ACK to client %d for %s\n", timeBuf, thread_num -1, thread_num - 1, recvMsg.mtext);
+		//printf("sent ACK to client %ld\n", sendMsg.mtype);
 
 		//waits for the END message
 		//recvMsg.mtext[0] = 'E';
@@ -151,7 +161,10 @@ void* process_client(void* param) {
 		//recvMsg.mtext[2] = 'D';
 
 		msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
-		printf("recv message:%s - type:%ld\n", recvMsg.mtext, recvMsg.mtype);
+		time(&current_time);
+		strcpy(timeBuf, ctime(&current_time));
+    	timeBuf[strcspn(timeBuf, "\n")] = 0;
+    	printf("[%s] Thread %d recieved %s from client process %d\n", timeBuf, thread_num -1, recvMsg.mtext, thread_num - 1);
 
 	} while (strcmp(recvMsg.mtext, "END") != 0);
 
@@ -175,6 +188,11 @@ void* process_client(void* param) {
 	strcpy(sendMsg.mtext, histogram);
 	msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0);
 
+	time(&current_time);
+	strcpy(timeBuf, ctime(&current_time));
+    timeBuf[strcspn(timeBuf, "\n")] = 0;
+    printf("[%s] Thread %d sending final letter count to client process %d\n", timeBuf, thread_num -1, thread_num - 1);
+
 	free(param);
 
 	return 0x0;
@@ -185,6 +203,12 @@ int main(int argc, char* argv[])
 {
 
 	int threads;
+	time_t current_time;
+	char timeBuf[30];
+	time(&current_time);
+	strcpy(timeBuf, ctime(&current_time));
+    timeBuf[strcspn(timeBuf, "\n")] = 0;
+    printf("[%s] Server is starting...\n", timeBuf);
 
 	if (argc != 2) {
 		printf("Incorrect arg count. Enter thread count\n");
@@ -195,8 +219,8 @@ int main(int argc, char* argv[])
 	numOfThreads = threads;
 	clientsFinished = 0;
 
-	if (threads < 1 || threads > 16) {
-		printf("Incorrect number of threads. Enter between 1 and 16\n");
+	if (threads < 1 || threads > 30) {
+		printf("Incorrect number of threads. Enter between 1 and 30\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -236,14 +260,10 @@ int main(int argc, char* argv[])
 		pthread_join(threadArray[i], NULL);
 	}
 
-	printf("\n");
-
-	//Print final output
-	for (i = 0; i < 26; i++) {
-		printf("%d#", globalArray[i]);
-	}
-
-	printf("\n");
+	time(&current_time);
+	strcpy(timeBuf, ctime(&current_time));
+    timeBuf[strcspn(timeBuf, "\n")] = 0;
+    printf("[%s] Server has finished.\n", timeBuf);
 
 	return 0;
 }

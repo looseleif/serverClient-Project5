@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <time.h>
 
 #include <dirent.h>
 #include <sys/stat.h>
@@ -87,6 +88,13 @@ void recursiveTraverse(char* path)
 
 int main(int argc, char* argv[])
 {
+    time_t current_time;
+    char timeBuf[30];
+    time(&current_time);
+    strcpy(timeBuf, ctime(&current_time));
+    timeBuf[strcspn(timeBuf, "\n")] = 0;
+    printf("[%s] Client starting...\n", timeBuf);
+
     //exits if arguments are not correct
     if (argc != 3)
     {
@@ -99,9 +107,19 @@ int main(int argc, char* argv[])
     char* dirname = argv[1];
     int numOfClients = atoi(argv[2]);
 
+    if (numOfClients < 1 || numOfClients > 30) {
+		printf("Incorrect number of clients. Enter between 1 and 30\n");
+		exit(EXIT_FAILURE);
+	}
+
     //converting dirname to absolute filepath
     char* absdirname = realpath(dirname, NULL);
     strcat(absdirname, "/");
+
+    time(&current_time);
+    strcpy(timeBuf, ctime(&current_time));
+    timeBuf[strcspn(timeBuf, "\n")] = 0;
+    printf("[%s] Directory %s traversal and file partitioning\n", timeBuf, absdirname);
 
     //printf("%s\n", absdirname);
 
@@ -121,7 +139,7 @@ int main(int argc, char* argv[])
     {
         printf("No text files found. Exiting...\n");
         free(absdirname);
-        return 0;
+        exit(1);
     }
 
     //start partitioning the files to clients
@@ -210,11 +228,18 @@ int main(int argc, char* argv[])
         {
             sendBuf.mtext[strcspn(sendBuf.mtext, "\n")] = 0;
             //printf("Sending %s of type: %ld\n", sendBuf.mtext, sendBuf.mtype);
+            time(&current_time);
+            strcpy(timeBuf, ctime(&current_time));
+            timeBuf[strcspn(timeBuf, "\n")] = 0;
+            printf("[%s] Sending %s from client process %d\n", timeBuf, sendBuf.mtext, clientID - 1);
             //send file path
             msgsnd(msgQ, (void*)&sendBuf, sizeof(sendBuf), 0);
             //recieve ACK
             msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0);
-            printf("Recieved ACK of type: %ld\n", recvBuf.mtype);
+            time(&current_time);
+            strcpy(timeBuf, ctime(&current_time));
+            timeBuf[strcspn(timeBuf, "\n")] = 0;
+            printf("[%s] Client process %d received ACK for %s\n", timeBuf, clientID - 1, sendBuf.mtext);
             if (strcmp(recvBuf.mtext, "ACK") != 0)
             {
                 printf("Error: recieved %s instead of ACK. Continuing... \n", recvBuf.mtext);
@@ -228,9 +253,20 @@ int main(int argc, char* argv[])
         strcpy(sendBuf.mtext, "END");
         msgsnd(msgQ, (void*)&sendBuf, sizeof(sendBuf), 0); //send END
 
+        time(&current_time);
+        strcpy(timeBuf, ctime(&current_time));
+        timeBuf[strcspn(timeBuf, "\n")] = 0;
+        printf("[%s] Sending END from client process %d\n", timeBuf, clientID - 1);
+
         //printf("waiting for resultszzz: %d\n\n\n", clientID);
 
         msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0); //recieve global result
+        
+        time(&current_time);
+        strcpy(timeBuf, ctime(&current_time));
+        timeBuf[strcspn(timeBuf, "\n")] = 0;
+        printf("[%s] Client process %d received (%s) from server\n", timeBuf, clientID - 1, recvBuf.mtext);
+
         //if directory does not exist, creates it
         struct stat dirstat;
         if (stat("ClientOutput", &dirstat) == -1)
@@ -248,6 +284,14 @@ int main(int argc, char* argv[])
         fclose(outFP);
 
         free(absdirname);
+
+        int count;
+        for (count = 0; count < numOfFiles; count++)
+        {
+            free(txtFilePaths[count]);
+        }
+        free(txtFilePaths);
+
         return 0;
     }
     else //parent operations
@@ -270,6 +314,11 @@ int main(int argc, char* argv[])
             }
         }
     }
+
+    time(&current_time);
+    strcpy(timeBuf, ctime(&current_time));
+    timeBuf[strcspn(timeBuf, "\n")] = 0;
+    printf("[%s] Client has finished.\n", timeBuf);
 
     int count;
     for (count = 0; count < numOfFiles; count++)
