@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
             timeBuf[strcspn(timeBuf, "\n")] = 0;
             printf("[%s] Sending %s from client process %d\n", timeBuf, sendBuf.mtext, clientID - 1);
             //send file path
-            if (-1 == msgsnd(msgQ, (void*)&sendBuf, sizeof(sendBuf), 0)) {
+            if (msgsnd(msgQ, (void*)&sendBuf, sizeof(sendBuf), 0) == -1) {
 
                 perror("sending file");
                 free(absdirname);
@@ -227,9 +227,8 @@ int main(int argc, char* argv[])
 
             }
             //recieve ACK
-            msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0);
 
-            if (-1 == msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0)) {
+            if (msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0) == -1) {
 
                 perror("rec ack");
                 free(absdirname);
