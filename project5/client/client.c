@@ -36,8 +36,6 @@ void recursiveTraverse(char* path)
         return;
     }
 
-    //printf("In directory: %s\n", path); formatting
-
     while ((directoryPointer = readdir(mydir)) != NULL)
     {
         if (excludePeriods < 2) //checking for the undesireable outputs
@@ -49,15 +47,10 @@ void recursiveTraverse(char* path)
         {
             sprintf(recursiveDirectoryStorage[currentDirStorInt], "%s%s", path, directoryPointer->d_name); //appends the path into the array
             currentDirStorInt++;
-            //printf(" %s ", directoryPointer->d_name);
         }
         else //Outputs all file names
         {
-            //printf(" %s ", directoryPointer->d_name);
-
             char* txtFilePath = (char*)malloc(sizeof(path) + sizeof(directoryPointer->d_name) + 2);
-            //printf("- \n%s \n-", path);
-            //printf("%s\n", directoryPointer->d_name);
             sprintf(txtFilePath, "%s%s", path, directoryPointer->d_name);
 
             numOfFiles++;
@@ -74,8 +67,6 @@ void recursiveTraverse(char* path)
             txtFilePaths[numOfFiles - 1] = txtFilePath;
         }
     }
-
-    //printf("\n"); formatting
 
     for (int i = 0; i < currentDirStorInt; i++)
     {
@@ -121,18 +112,9 @@ int main(int argc, char* argv[])
     timeBuf[strcspn(timeBuf, "\n")] = 0;
     printf("[%s] Directory %s traversal and file partitioning\n", timeBuf, absdirname);
 
-    //printf("%s\n", absdirname);
-
     //recursively look for txt files and add them to txtFilePaths
     recursiveTraverse(absdirname);
 
-    /*
-    int testI;
-    for(testI = 0; testI < numOfFiles; testI++)
-    {
-      printf("%s\n", txtFilePaths[testI]);
-    }
-    */
 
     //exit if no files were found
     if (numOfFiles == 0)
@@ -164,7 +146,6 @@ int main(int argc, char* argv[])
 
         //Creating the required filenames
         sprintf(filename, "ClientInput/Client%d.txt", i);
-        //printf("%s\n", filename);
         fp = fopen(filename, "w");
 
         if (fp == NULL)
@@ -176,13 +157,11 @@ int main(int argc, char* argv[])
 
         for (j = 0; j < baseFilesPerClient; j++) //writes base number of file paths
         {
-            //printf("%s\n", txtFilePaths[fileCounter]);
             fprintf(fp, "%s\n", txtFilePaths[fileLineCounter]);
             fileLineCounter++;
         }
         if (bonusFiles > 0) //adds an additional bonus file if needed
         {
-            //fwrite(txtFilePaths[fileCounter], 1, sizeof(txtFilePaths[fileCounter]), fp);
             fprintf(fp, "%s\n", txtFilePaths[fileLineCounter]);
             fileLineCounter++;
             bonusFiles--;
@@ -224,6 +203,13 @@ int main(int argc, char* argv[])
         sprintf(inputFileName, "ClientInput/Client%d.txt", clientID - 1);
         FILE* inputFP = fopen(inputFileName, "r");
 
+        if (inputFP == NULL)
+        {
+            perror("iClientInput fopen");
+            free(absdirname);
+            exit(1);
+        }
+
         while (fgets(sendBuf.mtext, 256, inputFP) != NULL) //recieve file path in text file
         {
             sendBuf.mtext[strcspn(sendBuf.mtext, "\n")] = 0;
@@ -233,9 +219,24 @@ int main(int argc, char* argv[])
             timeBuf[strcspn(timeBuf, "\n")] = 0;
             printf("[%s] Sending %s from client process %d\n", timeBuf, sendBuf.mtext, clientID - 1);
             //send file path
-            msgsnd(msgQ, (void*)&sendBuf, sizeof(sendBuf), 0);
+            if (-1 == msgsnd(msgQ, (void*)&sendBuf, sizeof(sendBuf), 0)) {
+
+                perror("sending file");
+                free(absdirname);
+                exit(1);
+
+            }
             //recieve ACK
             msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0);
+
+            if (-1 == msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0)) {
+
+                perror("rec ack");
+                free(absdirname);
+                exit(1);
+
+            }
+
             time(&current_time);
             strcpy(timeBuf, ctime(&current_time));
             timeBuf[strcspn(timeBuf, "\n")] = 0;
@@ -248,20 +249,32 @@ int main(int argc, char* argv[])
 
         fclose(inputFP);
 
-        //printf("waiting for resultssss: %d\n\n\n", clientID);
-
         strcpy(sendBuf.mtext, "END");
-        msgsnd(msgQ, (void*)&sendBuf, sizeof(sendBuf), 0); //send END
+        //send END
+
+        if (-1 == msgsnd(msgQ, (void*)&sendBuf, sizeof(sendBuf), 0)) {
+
+            perror("sending end");
+            free(absdirname);
+            exit(1);
+
+        }
 
         time(&current_time);
         strcpy(timeBuf, ctime(&current_time));
         timeBuf[strcspn(timeBuf, "\n")] = 0;
         printf("[%s] Sending END from client process %d\n", timeBuf, clientID - 1);
 
-        //printf("waiting for resultszzz: %d\n\n\n", clientID);
-
-        msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0); //recieve global result
+        //recieve global result
         
+        if (-1 == msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0)) {
+
+            perror("rec result");
+            free(absdirname);
+            exit(1);
+
+        }
+
         time(&current_time);
         strcpy(timeBuf, ctime(&current_time));
         timeBuf[strcspn(timeBuf, "\n")] = 0;
