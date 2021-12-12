@@ -37,7 +37,6 @@ void updateGlobal(int array[26]) {
 
 void* process_client(void* param) {
 
-	// REMEMBER TO FREE clientNum
 
 	time_t current_time;
 	char timeBuf[30];
@@ -48,8 +47,6 @@ void* process_client(void* param) {
 	int thread_num = *((int*)param);
 
 	int localArray[26] = { 0 };
-
-	//printf("testing with thread_num: %d\n", thread_num);
 
 	FILE* input;
 
@@ -66,8 +63,12 @@ void* process_client(void* param) {
 
 	int wordCount = 0;
 
-	// -----------------
-	msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
+	if( -1 == msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0))
+	{
+		perror("receiving file paths1");
+		exit(1);
+
+	}
 	time(&current_time);
 	strcpy(timeBuf, ctime(&current_time));
     timeBuf[strcspn(timeBuf, "\n")] = 0;
@@ -76,10 +77,7 @@ void* process_client(void* param) {
 	do {
 
 		//setting up message queue
-		//msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
 
-		//Testing
-		//printf("recv message:%s - type:%d\n",recvMsg.mtext, recvMsg.mtype);
 		input = fopen(recvMsg.mtext, "r");
 
 		//error checking
@@ -90,11 +88,9 @@ void* process_client(void* param) {
 
 		//Getting our input for the first line
 		c = fgetc(input);
-		//printf("first [%c] %d\n", c, thread_num);
 
 		//checking for a capital letter
 		if (c < 97) {
-			//printf("-2-");
 			c = c + 32;
 		}
 
@@ -105,7 +101,6 @@ void* process_client(void* param) {
 
 			//getting the character
 			c = fgetc(input);
-			//printf("[We get this: %c]\n",c);
 
 			//exits the while loop when we get to the end of the file
 			if (feof(input)) {
@@ -114,8 +109,6 @@ void* process_client(void* param) {
 
 			//checks and increments the character into the array
 			if (grabNext) {
-
-				//printf("[%c] %d\n", c, thread_num);
 				if (c < 97) {
 					c = c + 32;
 				}
@@ -126,7 +119,6 @@ void* process_client(void* param) {
 
 			//if the character is at the end of the line, we increment grabNext to get the next line
 			if (c == '\n') {
-				//printf("newline!\n");
 				grabNext = 1;
 			}
 			else {
@@ -148,19 +140,22 @@ void* process_client(void* param) {
 		sendMsg.mtype = thread_num + 30;
 
 		//sends ACK
-		msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0);
+		if(-1 == msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0))
+		{
+			perror("sending ACK");
+			exit(1);
+		}
 		time(&current_time);
 		strcpy(timeBuf, ctime(&current_time));
     	timeBuf[strcspn(timeBuf, "\n")] = 0;
     	printf("[%s] Thread %d sending ACK to client %d for %s\n", timeBuf, thread_num -1, thread_num - 1, recvMsg.mtext);
-		//printf("sent ACK to client %ld\n", sendMsg.mtype);
 
-		//waits for the END message
-		//recvMsg.mtext[0] = 'E';
-		//recvMsg.mtext[1] = 'N';
-		//recvMsg.mtext[2] = 'D';
-
-		msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0);
+		//receiving file paths
+		if(-1 == msgrcv(msgQ, (void*)&recvMsg, sizeof(recvMsg), thread_num, 0))
+		{
+			perror("receiving file paths2");
+			exit(1);
+		}
 		time(&current_time);
 		strcpy(timeBuf, ctime(&current_time));
     	timeBuf[strcspn(timeBuf, "\n")] = 0;
@@ -182,11 +177,15 @@ void* process_client(void* param) {
 		sprintf(histogram + strlen(histogram), "%d#", globalArray[i]);
 	} 
 
-	//printf(":) final result: %s \n", histogram);
 
 	//send global result
 	strcpy(sendMsg.mtext, histogram);
-	msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0);
+	if(-1 == msgsnd(msgQ, (void*)&sendMsg, sizeof(sendMsg), 0))
+	{
+		perror("sending result");
+		exit(1);
+
+	}
 
 	time(&current_time);
 	strcpy(timeBuf, ctime(&current_time));
