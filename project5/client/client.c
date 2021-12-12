@@ -30,7 +30,7 @@ void recursiveTraverse(char* path)
 
     if ((mydir = opendir(path)) == NULL) //error checking to see if the path is valid
     {
-        perror("dude!");
+        perror("recursiveTraverse opendir");
         printf("Can't open %s\n", path);
         return;
     }
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 
         //Creating the required filenames
         sprintf(filename, "ClientInput/Client%d.txt", i);
-        printf("%s\n", filename);
+        //printf("%s\n", filename);
         fp = fopen(filename, "w");
 
         if (fp == NULL)
@@ -209,12 +209,12 @@ int main(int argc, char* argv[])
         while (fgets(sendBuf.mtext, 256, inputFP) != NULL) //recieve file path in text file
         {
             sendBuf.mtext[strcspn(sendBuf.mtext, "\n")] = 0;
-            printf("Sending %s of type:%d\n", sendBuf.mtext, sendBuf.mtype);
+            //printf("Sending %s of type: %ld\n", sendBuf.mtext, sendBuf.mtype);
             //send file path
             msgsnd(msgQ, (void*)&sendBuf, sizeof(sendBuf), 0);
             //recieve ACK
             msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0);
-            printf("Recieved %s of type:%d\n", recvBuf.mtext, recvBuf.mtype);
+            printf("Recieved ACK of type: %ld\n", recvBuf.mtype);
             if (strcmp(recvBuf.mtext, "ACK") != 0)
             {
                 printf("Error: recieved %s instead of ACK. Continuing... \n", recvBuf.mtext);
@@ -223,12 +223,12 @@ int main(int argc, char* argv[])
 
         fclose(inputFP);
 
-        printf("waiting for resultssss: %d\n\n\n", clientID);
+        //printf("waiting for resultssss: %d\n\n\n", clientID);
 
         strcpy(sendBuf.mtext, "END");
         msgsnd(msgQ, (void*)&sendBuf, sizeof(sendBuf), 0); //send END
 
-        printf("waiting for resultszzz: %d\n\n\n", clientID);
+        //printf("waiting for resultszzz: %d\n\n\n", clientID);
 
         msgrcv(msgQ, (void*)&recvBuf, sizeof(recvBuf), clientID + 30, 0); //recieve global result
         //if directory does not exist, creates it
@@ -240,10 +240,9 @@ int main(int argc, char* argv[])
 
         FILE* outFP;
         char outputFileName[30];
-        sprintf(outputFileName, "ClientOutput/Client%d.txt", clientID);
+        sprintf(outputFileName, "ClientOutput/Client%d.txt", clientID - 1);
 
         outFP = fopen(outputFileName, "w");
-
         fprintf(outFP, "%s\n", recvBuf.mtext);
 
         fclose(outFP);

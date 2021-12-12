@@ -10,10 +10,13 @@
 #include <sys/msg.h>
 
 pthread_mutex_t letterLock = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t endLock = PTHREAD_MUTEX_INITIALIZER;
 
 int globalArray[26] = { 0 };
 
 int msgQ;
+int numOfThreads;
+int clientsFinished;
 
 void updateGlobal(int array[26]) {
 
@@ -81,11 +84,11 @@ void* process_client(void* param) {
 
 		//Getting our input for the first line
 		c = fgetc(input);
-		printf("first [%c] %d\n", c, thread_num);
+		//printf("first [%c] %d\n", c, thread_num);
 
 		//checking for a capital letter
 		if (c < 97) {
-			printf("-2-");
+			//printf("-2-");
 			c = c + 32;
 		}
 
@@ -106,7 +109,7 @@ void* process_client(void* param) {
 			//checks and increments the character into the array
 			if (grabNext) {
 
-				printf("[%c] %d\n", c, thread_num);
+				//printf("[%c] %d\n", c, thread_num);
 				if (c < 97) {
 					c = c + 32;
 				}
@@ -117,7 +120,7 @@ void* process_client(void* param) {
 
 			//if the character is at the end of the line, we increment grabNext to get the next line
 			if (c == '\n') {
-				printf("newline!\n");
+				//printf("newline!\n");
 				grabNext = 1;
 			}
 			else {
@@ -152,6 +155,12 @@ void* process_client(void* param) {
 
 	} while (strcmp(recvMsg.mtext, "END") != 0);
 
+	pthread_mutex_lock(&endLock);
+	clientsFinished++;
+	pthread_mutex_unlock(&endLock);
+
+	//Waits until all clients are finished (sorry for wasting CPU cycles!)
+	while (clientsFinished < numOfThreads) {;}
 
 	char histogram[256];
 	//Print final output
@@ -183,6 +192,8 @@ int main(int argc, char* argv[])
 	}
 
 	threads = atoi(argv[1]);
+	numOfThreads = threads;
+	clientsFinished = 0;
 
 	if (threads < 1 || threads > 16) {
 		printf("Incorrect number of threads. Enter between 1 and 16\n");
